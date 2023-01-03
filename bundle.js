@@ -50,7 +50,8 @@ function getTheme () {
             height: 2em;
             position: relative;
             --transparent: hsla(0, 0%, 0%, 0);
-            --grey: hsl(0, 0%, 80%);
+            --grey: hsl(0, 0%, 75%);
+            --focus: blue;
         }
         input {
             position: absolute;
@@ -59,7 +60,7 @@ function getTheme () {
             width: 100%;
             height: 1em;
             -webkit-appearance: none;
-            z-index: 2; 
+            z-index: 2;
             background-color: var(--transparent);
         }
         .bar {
@@ -69,7 +70,8 @@ function getTheme () {
             height: 1em;
             width: 100%;
             border-radius: 1em;
-            background-color: var(--grey);
+            overflow: hidden;
+            background-color: var(--transparent);
             display: flex;
             flex-flow: column;
             justify-content: center;
@@ -78,19 +80,21 @@ function getTheme () {
             position: absolute;
             height: 0.5em;
             width: 100%;
-            background-size: 3em 100%;
-            background-color: repeating-linear-gradient(to right,
+            background-image: repeating-linear-gradient(to right,
                 var(--grey) 0,
-                var(--grey) 2em,
-                white 2em,
-                white
+                var(--grey) 1em,
+                white 1em,
+                white 1.2em
             );
         }
         .fill {
             position: absolute;
-            height: 100%;
+            height: 0.5em;
             width: 30%;
             background-color: var(--grey);
+        }
+        input:focus + .bar .fill {
+            background-color: var(--focus);
         }
    `
 }
