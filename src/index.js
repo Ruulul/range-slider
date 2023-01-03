@@ -1,8 +1,33 @@
 module.exports = RangeSlider
 
-function RangeSlider ({min = 0, max = 100} = {min: 0, max: 100}) {
+function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, notify) {
+    const handlers = {
+        oninput(e) {
+            const el = e.target
+            if (notify) notify({type: 'update', body: el.value})
+            const val = el.value / el.max * 100
+            const bar = el.nextElementSibling
+            actions.changeWidthTo(val, bar.querySelector('.fill'))
+        }
+    }
+    const utils = {
+        el(x) {
+            return document.createElement(x)
+        },
+        div(x, el = 'div') {
+            const elm = utils.el(el)
+            if (x) elm.classList.add(x)
+            return elm
+        }
+    }
+    const actions = {
+        changeWidthTo(val, el) {
+            el.style.width = `${val}%`
+        }
+    }
+
     const el = utils.div()
-    const shadow = el.attachShadow({mode:'closed'})
+    const shadow = el.attachShadow({ mode: 'closed' })
 
     const input = utils.el('input')
     input.type = 'range'
@@ -24,31 +49,7 @@ function RangeSlider ({min = 0, max = 100} = {min: 0, max: 100}) {
     return el
 }
 
-const handlers = {
-    oninput (e) {
-        const el = e.target
-        const val = el.value/el.max * 100
-        const bar = el.nextElementSibling
-        actions.changeWidthTo(val, bar.querySelector('.fill'))
-    }
-}
-const utils = {
-    el(x) {
-        return document.createElement(x)
-    },
-    div(x, el = 'div') {
-        const elm = utils.el(el)
-        if (x) elm.classList.add(x)
-        return elm
-    }
-}
-const actions = {
-    changeWidthTo(val, el) {
-        el.style.width = `${val}%`
-    }
-}
-
-function getTheme () {
+function getTheme() {
     return `
         * {
             box-sizing: border-box;
