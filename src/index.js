@@ -16,7 +16,7 @@ function RangeSlider () {
     const style = e('style')
     style.textContent = getTheme()
 
-    shadow.append(style, input, bar)
+    shadow.append(style, bar, input)
 
     return el
 }
@@ -52,7 +52,6 @@ function getTheme () {
             width: 100%;
             height: 1em;
             -webkit-appearance: none;
-            z-index: 2; 
             background-color: var(--transparent);
         }
         .bar {
