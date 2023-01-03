@@ -47,7 +47,7 @@ function getTheme () {
         }
         input {
             position: absolute;
-            top: 0.5em;
+            top: 0;
             left: 0;
             width: 100%;
             height: 1em;
@@ -57,7 +57,7 @@ function getTheme () {
         }
         .bar {
             position: absolute;
-            top: 0.5em;
+            top: 0;
             left: 0;
             height: 1em;
             width: 100%;
@@ -71,13 +71,12 @@ function getTheme () {
             position: absolute;
             height: 0.5em;
             width: 100%;
-            transform: scale(-1, 1);
-            background-size: 3em 1em;
+            background-size: 3em 100%;
             background-color: repeating-linear-gradient(to right,
                 var(--grey) 0,
                 var(--grey) 2em,
                 white 2em,
-                white 3em
+                white
             );
         }
         .fill {
