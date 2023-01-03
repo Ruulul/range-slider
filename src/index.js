@@ -1,19 +1,18 @@
 module.exports = RangeSlider
 
-const e = document.createElement.bind(document)
 function RangeSlider () {
-    const el = e('div')
+    const el = utils.div()
     const shadow = el.attachShadow({mode:'closed'})
 
-    const input = e('input')
+    const input = utils.el('input')
     input.type = 'range'
 
-    const bar = utils.eX('bar')
-    const ruler = utils.eX('ruler')
-    const fill = utils.eX('fill')
+    const bar = utils.div('bar')
+    const ruler = utils.div('ruler')
+    const fill = utils.div('fill')
     bar.append(ruler, fill)
 
-    const style = e('style')
+    const style = utils.el('style')
     style.textContent = getTheme()
 
     shadow.append(style, input, bar)
@@ -25,8 +24,11 @@ const handlers = {
 
 }
 const utils = {
-    eX(x, el = 'div') {
-        const elm = e(el)
+    el(x) {
+        return document.createElement(x)
+    },
+    div(x, el = 'div') {
+        const elm = utils.el(el)
         elm.classList.add(x)
         return elm
     }
