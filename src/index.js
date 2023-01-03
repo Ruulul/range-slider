@@ -1,11 +1,15 @@
 module.exports = RangeSlider
 
-function RangeSlider () {
+function RangeSlider ({min = 0, max = 100} = {min: 0, max: 100}) {
     const el = utils.div()
     const shadow = el.attachShadow({mode:'closed'})
 
     const input = utils.el('input')
     input.type = 'range'
+    input.min = min
+    input.max = max
+    input.value = min
+    input.oninput = handlers.oninput
 
     const bar = utils.div('bar')
     const ruler = utils.div('ruler')
@@ -21,7 +25,12 @@ function RangeSlider () {
 }
 
 const handlers = {
-
+    oninput (e) {
+        const el = e.target
+        const val = el.value/el.max * 100
+        const bar = el.nextElementSibling
+        actions.changeWidthTo(val, bar.querySelector('.fill'))
+    }
 }
 const utils = {
     el(x) {
@@ -29,12 +38,14 @@ const utils = {
     },
     div(x, el = 'div') {
         const elm = utils.el(el)
-        elm.classList.add(x)
+        if (x) elm.classList.add(x)
         return elm
     }
 }
 const actions = {
-
+    changeWidthTo(val, el) {
+        el.style.width = `${val}%`
+    }
 }
 
 function getTheme () {
@@ -85,7 +96,7 @@ function getTheme () {
         .fill {
             position: absolute;
             height: 0.5em;
-            width: 30%;
+            width: 0;
             background-color: var(--grey);
             transition: background-color 0.2s;
         }

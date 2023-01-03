@@ -7,20 +7,23 @@ document.body.appendChild(slider)
 },{"..":2}],2:[function(require,module,exports){
 module.exports = RangeSlider
 
-const e = document.createElement.bind(document)
-function RangeSlider () {
-    const el = e('div')
+function RangeSlider ({min = 0, max = 100} = {min: 0, max: 100}) {
+    const el = utils.div()
     const shadow = el.attachShadow({mode:'closed'})
 
-    const input = e('input')
+    const input = utils.el('input')
     input.type = 'range'
+    input.min = min
+    input.max = max
+    input.value = min
+    input.oninput = handlers.oninput
 
-    const bar = utils.eX('bar')
-    const ruler = utils.eX('ruler')
-    const fill = utils.eX('fill')
+    const bar = utils.div('bar')
+    const ruler = utils.div('ruler')
+    const fill = utils.div('fill')
     bar.append(ruler, fill)
 
-    const style = e('style')
+    const style = utils.el('style')
     style.textContent = getTheme()
 
     shadow.append(style, input, bar)
@@ -29,17 +32,27 @@ function RangeSlider () {
 }
 
 const handlers = {
-
+    oninput (e) {
+        const el = e.target
+        const val = el.value/el.max * 100
+        const bar = el.nextElementSibling
+        actions.changeWidthTo(val, bar.querySelector('.fill'))
+    }
 }
 const utils = {
-    eX(x, el = 'div') {
-        const elm = e(el)
-        elm.classList.add(x)
+    el(x) {
+        return document.createElement(x)
+    },
+    div(x, el = 'div') {
+        const elm = utils.el(el)
+        if (x) elm.classList.add(x)
         return elm
     }
 }
 const actions = {
-
+    changeWidthTo(val, el) {
+        el.style.width = `${val}%`
+    }
 }
 
 function getTheme () {
@@ -90,7 +103,7 @@ function getTheme () {
         .fill {
             position: absolute;
             height: 0.5em;
-            width: 30%;
+            width: 0;
             background-color: var(--grey);
             transition: background-color 0.2s;
         }
