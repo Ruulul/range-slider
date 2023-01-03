@@ -85,6 +85,7 @@ function getTheme () {
             height: 0.5em;
             width: 30%;
             background-color: var(--grey);
+            transition: background-color 0.2s;
         }
         input:focus + .bar .fill {
             background-color: var(--focus);
