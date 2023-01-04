@@ -6,7 +6,7 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
         oninput(e) {
             const el = e.target
             if (notify) notify({type: 'update', data: { value: Number(el.value) }})
-            const val = el.value / el.max * 100
+            const val = (el.value - el.min) / el.max * 100
             actions.changeWidthTo(val, bar.querySelector('.fill'))
         }
     }
