@@ -7,61 +7,70 @@ document.body.appendChild(slider)
 },{"..":2}],2:[function(require,module,exports){
 module.exports = RangeSlider
 
-function RangeSlider ({min = 0, max = 100} = {min: 0, max: 100}) {
-    const el = utils.div()
-    const shadow = el.attachShadow({mode:'closed'})
+const id = 'v142857-range-slider'
+var count = 0
+function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
+    const name = `${id}-${count++}`
+    const notify = protocol(listen, name)
+    const el = document.createElement('div')
+    const shadow = el.attachShadow({ mode: 'closed' })
 
-    const input = utils.el('input')
-    input.type = 'range'
-    input.min = min
-    input.max = max
-    input.value = min
-    input.oninput = handlers.oninput
-
-    const bar = utils.div('bar')
-    const ruler = utils.div('ruler')
-    const fill = utils.div('fill')
+    const input = document.createElement('div')
+    Object.assign(input, {
+        type: 'range',
+        min, max, value: min,
+        oninput,
+    })
+    const bar = create_with_class('bar')
+    const ruler = create_with_class('ruler')
+    const fill = create_with_class('fill')
     bar.append(ruler, fill)
 
-    const style = utils.el('style')
-    style.textContent = getTheme()
+    const style = document.createElement('style')
+    style.textContent = get_theme()
 
     shadow.append(style, input, bar)
 
     return el
-}
 
-const handlers = {
-    oninput (e) {
-        const el = e.target
-        const val = el.value/el.max * 100
-        const bar = el.nextElementSibling
-        actions.changeWidthTo(val, bar.querySelector('.fill'))
+    function listen(message) {
+        const { type, data: { value, min, max, no_focus } = {} } = message
+        if (type === 'update') {
+            if (value) input.value = value
+            if (min) input.min = min
+            if (max) input.max = max
+            const val = (input.value - input.min) / input.max * 100
+            change_width_to(val, fill)
+            if (!no_focus) input.focus()
+        }
     }
-}
-const utils = {
-    el(x) {
-        return document.createElement(x)
-    },
-    div(x, el = 'div') {
-        const elm = utils.el(el)
-        if (x) elm.classList.add(x)
-        return elm
+
+    function oninput({ target: el }) {
+        notify({ head: [name], type: 'update', data: { value: Number(el.value) } })
+        const val = (el.value - el.min) / el.max * 100
+        change_width_to(val, bar.querySelector('.fill'))
     }
-}
-const actions = {
-    changeWidthTo(val, el) {
+
+    function change_width_to(val, el) {
         el.style.width = `${val}%`
     }
+
+    function create_with_class(x, tag = 'div') {
+        const el = document.createElement(tag)
+        if (x) el.classList.add(x)
+        return el
+    }
 }
 
-function getTheme () {
+function get_theme() {
     return `
-        * {
-            box-sizing: border-box;
+        :host {
             width: 100%;
             height: 2em;
             position: relative;
+        }
+        * {
+            box-sizing: border-box;
             --transparent: hsla(0, 0%, 0%, 0);
             --grey: hsl(0, 0%, 75%);
             --focus: blue;
