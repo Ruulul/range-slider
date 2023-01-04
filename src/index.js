@@ -5,7 +5,7 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
     const handlers = {
         oninput(e) {
             const el = e.target
-            if (notify) notify({type: 'update', data: Number(el.value)})
+            if (notify) notify({type: 'update', data: { value: Number(el.value) }})
             const val = el.value / el.max * 100
             actions.changeWidthTo(val, bar.querySelector('.fill'))
         }
@@ -49,10 +49,12 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
     return el
 
     function listen (message) {
-        const { type, data } = message
+        const { type, data: {value, min, max} = {} } = message
         if (type === 'update') {
-            input.value = data
-            const val = data / input.max * 100
+            if (value) input.value = value
+            if (min) input.min = min
+            if (max) input.max = max
+            const val = (input.value - input.min) / input.max * 100
             actions.changeWidthTo(val, fill)
             input.focus()
         }
