@@ -1,12 +1,12 @@
 module.exports = RangeSlider
 
-function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, notify) {
+function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
+    const notify = protocol(listen)
     const handlers = {
         oninput(e) {
             const el = e.target
-            if (notify) notify({type: 'update', body: el.value})
+            if (notify) notify({type: 'update', data: Number(el.value)})
             const val = el.value / el.max * 100
-            const bar = el.nextElementSibling
             actions.changeWidthTo(val, bar.querySelector('.fill'))
         }
     }
@@ -47,15 +47,27 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, notify) {
     shadow.append(style, input, bar)
 
     return el
+
+    function listen (message) {
+        const { type, data } = message
+        if (type === 'update') {
+            input.value = data
+            const val = data / input.max * 100
+            actions.changeWidthTo(val, fill)
+            input.focus()
+        }
+    }
 }
 
 function getTheme() {
     return `
-        * {
-            box-sizing: border-box;
+        :host {
             width: 100%;
             height: 2em;
             position: relative;
+        }
+        * {
+            box-sizing: border-box;
             --transparent: hsla(0, 0%, 0%, 0);
             --grey: hsl(0, 0%, 75%);
             --focus: blue;
