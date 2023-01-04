@@ -32,7 +32,7 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
             if (value) input.value = value
             if (min) input.min = min
             if (max) input.max = max
-            const val = (input.value - input.min) / input.max * 100
+            const val = (input.value - input.min) / (input.max - input.min) * 100
             change_width_to(val, fill)
             if (!no_focus) input.focus()
         }
@@ -40,7 +40,7 @@ function RangeSlider({ min = 0, max = 100 } = { min: 0, max: 100 }, protocol) {
 
     function oninput({ target: el }) {
         notify({ head: [name], type: 'update', data: { value: Number(el.value) } })
-        const val = (el.value - el.min) / el.max * 100
+        const val = (el.value - el.min) / (el.max - el.min) * 100
         change_width_to(val, bar.querySelector('.fill'))
     }
 
